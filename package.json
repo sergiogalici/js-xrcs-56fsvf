@@ -1,0 +1,16 @@
+{
+  "name": "js-exercises",
+  "version": "1.0.0",
+  "scripts": {
+    "test:arrays": "jest --watch arrays -t",
+    "test:objects": "jest --watch objects -t",
+    "test:immutability": "jest --watch immutability -t"
+  },
+  "dependencies": {
+    "@babel/core": "^7.20.7",
+    "@babel/preset-env": "^7.20.2",
+    "@turf/boolean-intersects": "^6.5.0",
+    "babel-jest": "^29.3.1",
+    "jest": "^29.3.1"
+  }
+}
