@@ -60,7 +60,11 @@ export function filterBy(array, condition) {
 
 // Dato un array e un elemento, se l'elemento non è presente nell'array va inserito alla fine
 // Se l'elemento è già presente, va rimosso
-export function toggleArrayItem(array, element) {}
+export function toggleArrayItem(array, element) {
+  return array.includes(element)
+    ? array.filter((i) => i !== element)
+    : [...array, element];
+}
 
 // Rimuove dall'array l'elemento all'indice specificato
 // Se l'indice è superiore o inferiore alla lunghezza dell'array, ritornare l'array originale
@@ -141,10 +145,28 @@ export function getTotal(products, discounts) {}
 export function populatePosts(posts, comments, users) {}
 
 // Implementare il metodo nativo Array.map()
-export function map(array, mapper) {}
+export function map(array, mapper) {
+  const arrToReturn = [];
+
+  for (let i = 0; i < array.length; i++) {
+    arrToReturn.push(mapper(array[i], i, array));
+  }
+
+  return arrToReturn;
+}
 
 // Implementare il metodo nativo Array.filter()
-export function filter(array, predicate) {}
+export function filter(array, predicate) {
+  const arrToReturn = [];
+
+  for (let i = 0; i < array.length; i++) {
+    if (predicate(array[i], i, array)) {
+      arrToReturn.push(array[i]);
+    }
+  }
+
+  return arrToReturn;
+}
 
 // Implementare il metodo nativo Array.some()
 export function some(array, predicate) {}
