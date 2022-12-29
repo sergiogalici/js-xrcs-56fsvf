@@ -68,7 +68,11 @@ export function toggleArrayItem(array, element) {
 
 // Rimuove dall'array l'elemento all'indice specificato
 // Se l'indice è superiore o inferiore alla lunghezza dell'array, ritornare l'array originale
-export function removeFromArray(array, index) {}
+export function removeFromArray(array, index) {
+  const arrToReturn = [...array];
+  arrToReturn.splice(index, 1);
+  return index < 0 || index > array.length ? array : arrToReturn;
+}
 
 // Dati 2 o più array, unirli in un unico array
 export function mergeArrays(...arrays) {}
