@@ -186,13 +186,27 @@ export function setSelected(array, selectedIds) {
 // Es.: [{ id: 1, name: 'A' }, { id: 2, name: 'B' }, { id: 3, name: 'B' }] con chiave 'name'
 // deve restituire ['A', 'B', 'C']
 // Se la chiave non esiste, ritornare l'elemento originale
-export function mapTo(array, key) {}
+export function mapTo(array, key) {
+  const arrToReturn = [];
+  array.forEach((c) => {
+    if (key in c) {
+      arrToReturn.push(c[key]);
+    }
+  });
+  return arrToReturn.length > 0 ? arrToReturn : array;
+}
 
 // Dato un array di oggetti e una funzione `predicate`, eseguire la funzione per ogni elemento
 // e ritornare true se per TUTTI è valida, altrimenti ritornare false
 // Es.: [{ id: 1, age: 32 }, { id: 2, age: 29 }] con predicate = (item) => item.age > 30,
 // `areItemsValid` ritorna false perché non tutti gli elementi hanno `age` maggiore di 30
-export function areItemsValid(array, predicate) {}
+export function areItemsValid(array, predicate) {
+  return (
+    array.filter((c) => {
+      return predicate(c);
+    }).length === array.length
+  );
+}
 
 // Dato un array di stringhe, un array di oggetti e una chiave, ritornare un nuovo array
 // dove ogni elemento del primo è sostuito col corrispondente elemento del secondo in base al valore di `key`
