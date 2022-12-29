@@ -230,7 +230,27 @@ export function populate(array, dataArray, key) {
 // calcolare il prezzo finale dei prodotti con l'eventuale sconto applicato,
 // considerando che ai prodotti con special = true si applica la percentuale specificata in discount.special,
 // agli altri prodotti la percentuale specificata in discounts.default
-export function getTotal(products, discounts) {}
+export function getTotal(products, discounts) {
+  let totalPrice = 0;
+  products.forEach((c) => {
+    if (discounts.hasOwnProperty('special') && c.special === true) {
+      let discount = discounts.special / 100;
+      let difference = c.price * discount;
+      let changedPrice = c.price - difference;
+      let totalAmount = changedPrice * c.quantity;
+      totalPrice += totalAmount;
+    } else if (discounts.hasOwnProperty('default') && c.special !== true) {
+      let discount = discounts.default / 100;
+      let difference = c.price * discount;
+      let changedPrice = c.price - difference;
+      let totalAmount = changedPrice * c.quantity;
+      totalPrice += totalAmount;
+    } else {
+      totalPrice += c.price * c.quantity;
+    }
+  });
+  return totalPrice;
+}
 
 // Dati un array di post, di commenti e di utenti (vedere in mock.js), creare un nuovo array dove ogni post include:
 // - un campo `user` con l'oggetto intero dell'utente che corrisponde a `userId` (che va poi rimosso)
