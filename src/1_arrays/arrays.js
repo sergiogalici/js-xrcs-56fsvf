@@ -76,30 +76,27 @@ export function removeFromArray(array, index) {
 
 // Dati 2 o più array, unirli in un unico array
 export function mergeArrays(...arrays) {
-  const arrToReturn = [];
+  const arrToReturn = []
+  arrays.forEach(c => {
+      c.forEach(d => {
+        arrToReturn.push(d)
+      })
+    })
+  return arrToReturn
 
-  arrays.forEach((c) => {
-    c.forEach((d) => {
-      arrToReturn.push([...d]);
-    });
-  });
-
-  return arrToReturn;
 }
 
 // Dati 2 o più array, unirli in un unico array, ma rimuovere eventuali duplicati
 export function mergeArraysUnique(...arrays) {
   const arrToReturn = [];
+  arrays.forEach(c => {
+    c.forEach(d => {
+      if (!arrToReturn.includes(d))
+        arrToReturn.push(d)
+    })
+  })
+return arrToReturn
 
-  arrays.forEach((c) => {
-    c.forEach((d) => {
-      if (!arrays.includes(d)) {
-        arrToReturn.push([...d]);
-      }
-    });
-  });
-
-  return arrToReturn;
 }
 
 // Dato un array di oggetti, una chiave e una direzione (ASC | DESC), ordinare l'array in base ai valori della chiave specificata
@@ -164,7 +161,15 @@ export function addExtraProperties(array, properties) {
 // Es.: [{ id: 1, name: 'A', city: 'X', state: 'Y' }] con properties ['city', 'state']
 // deve restituire [{ id: 1, name: 'A' }]
 // L'array originale e i suoi elementi non devono essere modificati
-export function removeProperties(array, properties) {}
+export function removeProperties(array, properties) {
+  const keys = Object.keys(properties);
+  return array.map((c) => {
+    for (const key in keys) {
+      delete c[key];
+    }
+    return c
+  });
+}
 
 // Dato un array di oggetti con una chiave id e un array di id selezionati,
 // ritornare un nuovo array in cui gli elementi selezionati hanno la proprietà `selected`= true
