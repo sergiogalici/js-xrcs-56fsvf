@@ -76,27 +76,24 @@ export function removeFromArray(array, index) {
 
 // Dati 2 o più array, unirli in un unico array
 export function mergeArrays(...arrays) {
-  const arrToReturn = []
-  arrays.forEach(c => {
-      c.forEach(d => {
-        arrToReturn.push(d)
-      })
-    })
-  return arrToReturn
-
+  const arrToReturn = [];
+  arrays.forEach((c) => {
+    c.forEach((d) => {
+      arrToReturn.push(d);
+    });
+  });
+  return arrToReturn;
 }
 
 // Dati 2 o più array, unirli in un unico array, ma rimuovere eventuali duplicati
 export function mergeArraysUnique(...arrays) {
   const arrToReturn = [];
-  arrays.forEach(c => {
-    c.forEach(d => {
-      if (!arrToReturn.includes(d))
-        arrToReturn.push(d)
-    })
-  })
-return arrToReturn
-
+  arrays.forEach((c) => {
+    c.forEach((d) => {
+      if (!arrToReturn.includes(d)) arrToReturn.push(d);
+    });
+  });
+  return arrToReturn;
 }
 
 // Dato un array di oggetti, una chiave e una direzione (ASC | DESC), ordinare l'array in base ai valori della chiave specificata
@@ -149,9 +146,9 @@ export function replaceItemAtIndex(array, newItem, index) {
 // deve restituire [{ id: 1, name: 'A', city: 'X', number: 99  }, { id: 2, name: 'B', city: 'X', number: 99 }]
 // L'array originale e i suoi elementi non devono essere modificati
 export function addExtraProperties(array, properties) {
-  return array.map(c => {
-    return {...c, ...properties}
-  })
+  return array.map((c) => {
+    return { ...c, ...properties };
+  });
 }
 
 // Dato un array di oggetti rimuovere da ciascuno di essi le proprietà specificate
@@ -159,13 +156,13 @@ export function addExtraProperties(array, properties) {
 // deve restituire [{ id: 1, name: 'A' }]
 // L'array originale e i suoi elementi non devono essere modificati
 export function removeProperties(array, properties) {
-  return array.map(c => {
-    const newItem = {...c}
+  return array.map((c) => {
+    const newItem = { ...c };
     for (const key of properties) {
-      delete newItem[key]
+      delete newItem[key];
     }
-    return newItem
-  })
+    return newItem;
+  });
 }
 
 // Dato un array di oggetti con una chiave id e un array di id selezionati,
@@ -173,7 +170,17 @@ export function removeProperties(array, properties) {
 // Es.: [{ id: 1, name: 'A' }, { id: 2, name: 'B' }, { id: 3, name: 'C' }] e selectedIds = [2, 3]
 // deve restituire [{ id: 1, name: 'A' }, { id: 2, name: 'B', selected: true }, { id: 3, name: 'C', selected: true }]
 // L'array originale e i suoi elementi non devono essere modificati
-export function setSelected(array, selectedIds) {}
+export function setSelected(array, selectedIds) {
+  const arrToReturn = [];
+  array.forEach((c) => {
+    const newObj = { ...c };
+    if (selectedIds.includes(c.id)) {
+      newObj.selected = true;
+    }
+    arrToReturn.push(newObj);
+  });
+  return arrToReturn;
+}
 
 // Dato un array di oggetti, rimapparlo estraendo la chiave specificata
 // Es.: [{ id: 1, name: 'A' }, { id: 2, name: 'B' }, { id: 3, name: 'B' }] con chiave 'name'
