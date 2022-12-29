@@ -75,7 +75,17 @@ export function removeFromArray(array, index) {
 }
 
 // Dati 2 o più array, unirli in un unico array
-export function mergeArrays(...arrays) {}
+export function mergeArrays(...arrays) {
+  const arrToReturn = [];
+
+  arrays.forEach((c) => {
+    c.forEach((d) => {
+      arrToReturn.push([...d]);
+    });
+  });
+
+  return arrToReturn;
+}
 
 // Dati 2 o più array, unirli in un unico array, ma rimuovere eventuali duplicati
 export function mergeArraysUnique(...arrays) {}
