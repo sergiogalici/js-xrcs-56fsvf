@@ -159,7 +159,13 @@ export function addExtraProperties(array, properties) {
 // deve restituire [{ id: 1, name: 'A' }]
 // L'array originale e i suoi elementi non devono essere modificati
 export function removeProperties(array, properties) {
-  
+  return array.map(c => {
+    const newItem = {...c}
+    for (const key of properties) {
+      delete newItem[key]
+    }
+    return newItem
+  })
 }
 
 // Dato un array di oggetti con una chiave id e un array di id selezionati,
