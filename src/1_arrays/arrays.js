@@ -233,21 +233,18 @@ export function populate(array, dataArray, key) {
 export function getTotal(products, discounts) {
   let totalPrice = 0;
   products.forEach((c) => {
+    let discount = 0;
     if (discounts.hasOwnProperty('special') && c.special === true) {
-      let discount = discounts.special / 100;
-      let difference = c.price * discount;
-      let changedPrice = c.price - difference;
-      let totalAmount = changedPrice * c.quantity;
-      totalPrice += totalAmount;
-    } else if (discounts.hasOwnProperty('default') && c.special !== true) {
-      let discount = discounts.default / 100;
-      let difference = c.price * discount;
-      let changedPrice = c.price - difference;
-      let totalAmount = changedPrice * c.quantity;
-      totalPrice += totalAmount;
-    } else {
-      totalPrice += c.price * c.quantity;
+      discount = discounts.special / 100;
     }
+    if (discounts.hasOwnProperty('default') && c.special !== true) {
+      discount = discounts.default / 100;
+    }
+
+    let difference = c.price * discount;
+    let changedPrice = c.price - difference;
+    let totalAmount = changedPrice * c.quantity;
+    totalPrice += totalAmount;
   });
   return totalPrice;
 }
@@ -258,7 +255,9 @@ export function getTotal(products, discounts) {
 // Dentro ogni commento deve esserci un campo `user` con l'oggetto intero dell'utente che ha scritto il commento (corrispondente a `userId`, che va poi rimosso)
 // Se non ci sono commenti, comments deve essere un array vuoto
 // Controllare il risultato del test per vedere come deve essere l'array finale
-export function populatePosts(posts, comments, users) {}
+export function populatePosts(posts, comments, users) {
+  
+}
 
 // Implementare il metodo nativo Array.map()
 export function map(array, mapper) {
