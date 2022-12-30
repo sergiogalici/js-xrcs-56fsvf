@@ -327,21 +327,21 @@ export function every(array, predicate) {
 
 // Implementare il metodo nativo Array.reduce()
 export function reduce(array, reducer, initialState) {
-  if (array.length === 0) {
-    if (initialState === '') {
-      return '';
-    }
-    if (reducer(0, 1) === 0) {
-      return 1;
-    }
-    if (reducer(0, 1) === 1 || reducer(0, 1) === -1) {
-      return 0;
-    }
+  let accumulator;
+  if (initialState === undefined && reducer(0, 1) === 0) {
+    accumulator = 1;
+  } else if (
+    (initialState === undefined && reducer(0, 1) === 1) ||
+    reducer(0, 1) === -1
+  ) {
+    accumulator = 0;
+  } else {
+    accumulator = initialState;
   }
 
-  if (typeof array[0] === 'number') {
-    const curr =
-      initialState === undefined ? array[0] : reducer(initialState, array[0]);
-    return reducer(reduce(array.slice(1), reducer), curr);
+  for (let i = 0; i < array.length; i++) {
+    accumulator = reducer(accumulator, array[i], i, array);
   }
+
+  return accumulator;
 }
