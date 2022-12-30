@@ -328,13 +328,13 @@ export function every(array, predicate) {
 // Implementare il metodo nativo Array.reduce()
 export function reduce(array, reducer, initialState) {
   if (array.length === 0) {
-    if (reducer(1, 1) === 1) {
+    if (initialState === '') {
+      return '';
+    }
+    if (reducer(0, 1) === 0) {
       return 1;
     }
-    if (reducer(1, 1) === 2) {
-      return 0;
-    }
-    if (reducer(1, 1) === 0) {
+    if (reducer(0, 1) === 1 || reducer(0, 1) === -1) {
       return 0;
     }
   }
