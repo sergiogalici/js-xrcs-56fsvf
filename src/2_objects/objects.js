@@ -56,7 +56,19 @@ export function normalizeObject(object) {}
 // 3.  E   F
 // restituire la profondità (in questo caso 3)
 // Il tree ha la seguente struttura: { value: 'A', children: [{ value: 'B', children: [...] }, { value: 'C' }] }
-export function getTreeDepth(tree) {}
+export function getTreeDepth(tree) {
+  let depth = 1;
+  if (tree.children) {
+    let max = 0;
+    for (const child of tree.children) {
+      const depthOfChild = getTreeDepth(child);
+
+      max = depthOfChild > max ? depthOfChild : max;
+    }
+    depth += max;
+  }
+  return depth;
+}
 
 // Dato un tree come sopra, contare il numero di nodi "leaf", cioè quelli senza ulteriori figli (0 children)
 // Considerando l'esempio sopra, i nodi "leaf" sono 4 (C, D, E, F)
