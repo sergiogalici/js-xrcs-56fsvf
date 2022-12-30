@@ -309,7 +309,16 @@ export function filter(array, predicate) {
 }
 
 // Implementare il metodo nativo Array.some()
-export function some(array, predicate) {}
+export function some(array, predicate) {
+  const arrToReturn = [];
+
+  for (let i = 0; i < array.length; i++) {
+    if (predicate(array[i], i, array)) {
+      return true;
+    }
+  }
+  return false;
+}
 
 // Implementare il metodo nativo Array.every()
 export function every(array, predicate) {}
