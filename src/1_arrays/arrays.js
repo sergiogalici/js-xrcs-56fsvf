@@ -314,13 +314,15 @@ export function some(array, predicate) {
 
 // Implementare il metodo nativo Array.every()
 export function every(array, predicate) {
+  let flag = false;
   for (let i = 0; i < array.length; i++) {
     if (predicate(array[i], i, array)) {
-      return true;
+      flag = true;
     } else {
-      return false;
+      flag = false;
     }
   }
+  return flag;
 }
 
 // Implementare il metodo nativo Array.reduce()
