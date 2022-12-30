@@ -55,7 +55,7 @@ export function filterBy(array, condition) {
       arrToReturn.push(array[i]);
     }
   }
-  return arrToReturn.length > 0 ? arrToReturn : [];
+  return arrToReturn;
 }
 
 // Dato un array e un elemento, se l'elemento non è presente nell'array va inserito alla fine
@@ -304,8 +304,6 @@ export function filter(array, predicate) {
 
 // Implementare il metodo nativo Array.some()
 export function some(array, predicate) {
-  const arrToReturn = [];
-
   for (let i = 0; i < array.length; i++) {
     if (predicate(array[i], i, array)) {
       return true;
@@ -315,7 +313,15 @@ export function some(array, predicate) {
 }
 
 // Implementare il metodo nativo Array.every()
-export function every(array, predicate) {}
+export function every(array, predicate) {
+  for (let i = 0; i < array.length; i++) {
+    if (predicate(array[i], i, array)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
 
 // Implementare il metodo nativo Array.reduce()
 export function reduce(array, reducer, initialState) {}
