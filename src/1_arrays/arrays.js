@@ -171,15 +171,9 @@ export function removeProperties(array, properties) {
 // deve restituire [{ id: 1, name: 'A' }, { id: 2, name: 'B', selected: true }, { id: 3, name: 'C', selected: true }]
 // L'array originale e i suoi elementi non devono essere modificati
 export function setSelected(array, selectedIds) {
-  const arrToReturn = [];
-  array.forEach((c) => {
-    const newObj = { ...c };
-    if (selectedIds.includes(c.id)) {
-      newObj.selected = true;
-    }
-    arrToReturn.push(newObj);
+  return array.map((c) => {
+    return selectedIds.includes(c.id) ? { ...c, selected: true } : c;
   });
-  return arrToReturn;
 }
 
 // Dato un array di oggetti, rimapparlo estraendo la chiave specificata
