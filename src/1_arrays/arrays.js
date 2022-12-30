@@ -279,7 +279,6 @@ export function populatePosts(posts, comments, users) {
       });
     }
     delete p.userId;
-    delete p.postId;
     arrToReturn.push(p);
   });
   return arrToReturn;
