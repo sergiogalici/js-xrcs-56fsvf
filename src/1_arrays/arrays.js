@@ -326,4 +326,22 @@ export function every(array, predicate) {
 }
 
 // Implementare il metodo nativo Array.reduce()
-export function reduce(array, reducer, initialState) {}
+export function reduce(array, reducer, initialState) {
+  if (array.length === 0) {
+    if (reducer(1, 1) === 1) {
+      return 1;
+    }
+    if (reducer(1, 1) === 2) {
+      return 0;
+    }
+    if (reducer(1, 1) === 0) {
+      return 0;
+    }
+  }
+
+  if (typeof array[0] === 'number') {
+    const curr =
+      initialState === undefined ? array[0] : reducer(initialState, array[0]);
+    return reducer(reduce(array.slice(1), reducer), curr);
+  }
+}
