@@ -256,7 +256,33 @@ export function getTotal(products, discounts) {
 // Se non ci sono commenti, comments deve essere un array vuoto
 // Controllare il risultato del test per vedere come deve essere l'array finale
 export function populatePosts(posts, comments, users) {
-  
+  const arrToReturn = [];
+  posts.forEach((p) => {
+    p.comments = [];
+    users.forEach((u) => {
+      if (u.id === p.userId) {
+        p.user = u;
+      }
+    });
+    if (comments.length > 0) {
+      comments.forEach((c) => {
+        users.forEach((uc) => {
+          if (uc.id === c.userId) {
+            c.user = uc;
+            delete c.userId;
+          }
+        });
+        if (p.id === c.postId) {
+          delete c.postId;
+          p.comments.push(c);
+        }
+      });
+    }
+    delete p.userId;
+    delete p.postId;
+    arrToReturn.push(p);
+  });
+  return arrToReturn;
 }
 
 // Implementare il metodo nativo Array.map()
