@@ -72,6 +72,7 @@ export function removeFromArray(array, index) {
   const arrToReturn = [...array];
   arrToReturn.splice(index, 1);
   return index < 0 || index > array.length ? array : arrToReturn;
+  // this correctly considers a negative index and an index that exceeds the length of the array
 }
 
 // Dati 2 o più array, unirli in un unico array
@@ -91,6 +92,8 @@ export function mergeArraysUnique(...arrays) {
   arrays.forEach((c) => {
     c.forEach((d) => {
       if (!arrToReturn.includes(d)) arrToReturn.push(d);
+      // this correctly removes all the duplicates AFTER the first time they showed up
+      // as requested inside of the tests
     });
   });
   return arrToReturn;
@@ -106,17 +109,18 @@ export function sortBy(array, key, direction) {
   const keyArr = [];
 
   array.forEach((c) => {
-    keyArr.push(c[key]);
+    keyArr.push(c[key]); // an array with all the keys of the original array
   });
 
   if (direction === 'ASC') {
     keyArr.sort();
   } else {
-    keyArr.sort().reverse();
+    keyArr.sort().reverse(); // reverse() will make the order descending
   }
 
   keyArr.forEach((c) => {
     arrToReturn.push(array[array.findIndex((d) => d[key] === c)]);
+    // from the sorted array of keys, we can find the corresponding item in the original array
   });
 
   return arrToReturn;
@@ -137,7 +141,7 @@ export function keyBy(array, key) {
 // Dato un array, inserire il nuovo elemento all'indice specificato, sostituendo quello che c'è già
 export function replaceItemAtIndex(array, newItem, index) {
   const arrToReturn = [...array];
-  arrToReturn.splice(index, 1, newItem);
+  arrToReturn.splice(index, 1, newItem); // splice removes 1 an item at index "index" and adds newItem
   return arrToReturn;
 }
 
@@ -157,7 +161,7 @@ export function addExtraProperties(array, properties) {
 // L'array originale e i suoi elementi non devono essere modificati
 export function removeProperties(array, properties) {
   return array.map((c) => {
-    const newItem = { ...c };
+    const newItem = { ...c }; // a copy of the current element (c) won't modify the original array
     for (const key of properties) {
       delete newItem[key];
     }
@@ -174,6 +178,7 @@ export function setSelected(array, selectedIds) {
   return array.map((c) => {
     // array.map returns a new array and doesn't modify the original one
     return selectedIds.includes(c.id) ? { ...c, selected: true } : c;
+    // spreads the current object (c) in a new one and adds "selected: true" if the ids match
   });
 }
 
@@ -332,11 +337,11 @@ export function every(array, predicate) {
 export function reduce(array, reducer, initialState) {
   let accumulator;
   if (initialState === undefined && reducer(0, 1) === 0) {
-    //consindering the case of a given
-    accumulator = 1; // multiplication or division inside the reducer
+    //consindering the case of a given multiplication or division inside the reducer
+    accumulator = 1;
   } else if (
-    (initialState === undefined && reducer(0, 1) === 1) || // consindering the case of a given
-    reducer(0, 1) === -1 // sum or subtraction inside the reducer
+    (initialState === undefined && reducer(0, 1) === 1) || // consindering the case of a given sum or subtraction inside the reducer
+    reducer(0, 1) === -1
   ) {
     accumulator = 0;
   } else {
