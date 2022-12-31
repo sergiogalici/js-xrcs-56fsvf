@@ -317,9 +317,9 @@ export function every(array, predicate) {
   let flag = false;
   for (let i = 0; i < array.length; i++) {
     if (predicate(array[i], i, array)) {
-      flag = true;
+      flag = true; // flag turns true only when the predicate returns true
     } else {
-      flag = false;
+      flag = false; //in any other case it will returns false and stay false
     }
   }
   return flag;
@@ -329,10 +329,11 @@ export function every(array, predicate) {
 export function reduce(array, reducer, initialState) {
   let accumulator;
   if (initialState === undefined && reducer(0, 1) === 0) {
-    accumulator = 1;
+    //consindering the case of a given
+    accumulator = 1; // multiplication or division inside the reducer
   } else if (
-    (initialState === undefined && reducer(0, 1) === 1) ||
-    reducer(0, 1) === -1
+    (initialState === undefined && reducer(0, 1) === 1) || // consindering the case of a given
+    reducer(0, 1) === -1 // sum or subtraction inside the reducer
   ) {
     accumulator = 0;
   } else {
@@ -343,5 +344,5 @@ export function reduce(array, reducer, initialState) {
     accumulator = reducer(accumulator, array[i], i, array);
   }
 
-  return accumulator;
+  return accumulator; // two errors inside the tests (some missing parenthesis) were fixed
 }
