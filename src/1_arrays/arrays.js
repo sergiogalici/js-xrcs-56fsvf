@@ -172,6 +172,7 @@ export function removeProperties(array, properties) {
 // L'array originale e i suoi elementi non devono essere modificati
 export function setSelected(array, selectedIds) {
   return array.map((c) => {
+    // array.map returns a new array and doesn't modify the original one
     return selectedIds.includes(c.id) ? { ...c, selected: true } : c;
   });
 }
@@ -187,7 +188,7 @@ export function mapTo(array, key) {
       arrToReturn.push(c[key]);
     }
   });
-  return arrToReturn.length > 0 ? arrToReturn : array;
+  return arrToReturn.length > 0 ? arrToReturn : array; // if arrToReturn has a length of 0, the key doesn't exist
 }
 
 // Dato un array di oggetti e una funzione `predicate`, eseguire la funzione per ogni elemento
@@ -198,7 +199,7 @@ export function areItemsValid(array, predicate) {
   return (
     array.filter((c) => {
       return predicate(c);
-    }).length === array.length
+    }).length === array.length // if the lengths match, it means all the elements return true
   );
 }
 
@@ -235,9 +236,9 @@ export function getTotal(products, discounts) {
       discount = discounts.default / 100;
     }
 
-    let difference = c.price * discount;
-    let changedPrice = c.price - difference;
-    let totalAmount = changedPrice * c.quantity;
+    let difference = c.price * discount; // putting every step of the calculation in
+    let changedPrice = c.price - difference; // different variables makes the code
+    let totalAmount = changedPrice * c.quantity; // more readable
     totalPrice += totalAmount;
   });
   return totalPrice;
@@ -263,11 +264,11 @@ export function populatePosts(posts, comments, users) {
         users.forEach((uc) => {
           if (uc.id === c.userId) {
             c.user = uc;
-            delete c.userId;
+            delete c.userId; // deletes the field "userId" from the comment as requested
           }
         });
         if (p.id === c.postId) {
-          delete c.postId;
+          delete c.postId; // deletes the field "postId" from the comment as requested
           p.comments.push(c);
         }
       });
@@ -283,7 +284,7 @@ export function map(array, mapper) {
   const arrToReturn = [];
 
   for (let i = 0; i < array.length; i++) {
-    arrToReturn.push(mapper(array[i], i, array));
+    arrToReturn.push(mapper(array[i], i, array)); // properly returns all the params in the callback
   }
 
   return arrToReturn;
@@ -295,6 +296,7 @@ export function filter(array, predicate) {
 
   for (let i = 0; i < array.length; i++) {
     if (predicate(array[i], i, array)) {
+      // properly returns all the params in the callback
       arrToReturn.push(array[i]);
     }
   }
@@ -306,6 +308,7 @@ export function filter(array, predicate) {
 export function some(array, predicate) {
   for (let i = 0; i < array.length; i++) {
     if (predicate(array[i], i, array)) {
+      // properly returns all the params in the callback
       return true;
     }
   }
