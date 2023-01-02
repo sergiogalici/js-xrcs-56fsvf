@@ -67,34 +67,20 @@ export function toggleArrayItem(array, element) {
 // Rimuove dall'array l'elemento all'indice specificato
 // Se l'indice è superiore o inferiore alla lunghezza dell'array, ritornare l'array originale
 export function removeFromArray(array, index) {
-  const arrToReturn = [...array];
-  arrToReturn.splice(index, 1);
-  return index < 0 || index > array.length ? array : arrToReturn;
+  return index < 0 || index > array.length
+    ? array
+    : [...array.slice(0, index), ...array.slice(index + 1)];
   // this correctly considers a negative index and an index that exceeds the length of the array
 }
 
 // Dati 2 o più array, unirli in un unico array
 export function mergeArrays(...arrays) {
-  const arrToReturn = [];
-  arrays.forEach((c) => {
-    c.forEach((d) => {
-      arrToReturn.push(d);
-    });
-  });
-  return arrToReturn;
+  return [].concat(...arrays);
 }
 
 // Dati 2 o più array, unirli in un unico array, ma rimuovere eventuali duplicati
 export function mergeArraysUnique(...arrays) {
-  const arrToReturn = [];
-  arrays.forEach((c) => {
-    c.forEach((d) => {
-      if (!arrToReturn.includes(d)) arrToReturn.push(d);
-      // this correctly removes all the duplicates AFTER the first time they showed up
-      // as requested inside of the tests
-    });
-  });
-  return arrToReturn;
+  return [...new Set([].concat(...arrays))];
 }
 
 // Dato un array di oggetti, una chiave e una direzione (ASC | DESC), ordinare l'array in base ai valori della chiave specificata
