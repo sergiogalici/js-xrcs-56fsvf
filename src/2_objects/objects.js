@@ -47,7 +47,12 @@ export function filterObject(object, predicate) {
 // Data una chiave `key`, una funzione `getValue` per ottenere il valore associato a quella chiave e un oggetto `cache`,
 // `getCachedValue` deve chiamare una sola volta `getValue` e conservare il valore ottenuto, in modo che se
 // la funzione viene richiamata successivamente con la stessa chiave, venga restituito il valore senza richiamare `getValue`
-export function getCachedValue(key, getValue, cache) {}
+export function getCachedValue(key, getValue, cache) {
+  if (!cache.hasOwnProperty(key)) {
+    cache[key] = getValue(key);
+  }
+  return cache[key];
+}
 
 // Dato un array bidimensionale, dove ogni array interno è una coppia chiave-valore, convertirlo in un oggetto
 // Es.: [['name', 'John'], ['age', 22]] diventa { name: 'John', age: 22 }
