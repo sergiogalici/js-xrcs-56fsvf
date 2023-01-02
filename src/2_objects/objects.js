@@ -95,7 +95,22 @@ export function hasValidProperty(object, predicate) {
 // Ritornare un array con i due oggetti (vedere il test per altri esempi)
 // Idealmente dovrebbe funzionare per ogni oggetto trovato dentro l'oggetto di partenza, anche quelli annidati
 export function normalizeObject(object) {
-  
+  return Object.entries(object).reduce(
+    ([a, b], [key, value]) => {
+      if (typeof value !== 'object') {
+        a[key] = value;
+        return [a, b];
+      }
+      if (typeof value === 'object') {
+        a[`${key}Id`] = value.id;
+        const [recursiveA, recursiveB] = normalizeObject(value);
+        // uses recursion to properly receive any nested objects inside of "value"
+        b = { ...b, ...recursiveB, [value.id]: recursiveA };
+        return [a, b];
+      }
+    },
+    [{}, {}]
+  );
 }
 
 // Dato un tree del tipo
@@ -140,13 +155,72 @@ export function countTreeLeafNodes(tree) {
 // specificando un numero come indice. Se la proprietà non esiste ritornare fallback o undefined.
 // Es. 1: { address: { city: 'New York' } } e 'address.city' ritorna 'New York'
 // Es. 2: { movies: ['Shrek', 'Shrek 2'] } e 'movies.1' ritorna 'Shrek 2'
-export function get(object, path, fallback) {}
+export function get(object, path, fallback) {
+  let value = object;
+  const pathParts = path.split('.');
+  for (const part of pathParts) {
+    if (value == null || !(part in value)) {
+      return fallback;
+    }
+    if (Array.isArray(value)) {
+      const index = Number(part);
+      if (Number.isNaN(index)) {
+        return fallback;
+      }
+      value = value[index];
+    } else {
+      value = value[part];
+    }
+  }
+  return value;
+}
 
 // Dato un oggetto con una struttura non uniforme contentente informazioni geografiche
 // su strade e punti di interesse, generare un oggetto GeoJSON (RFC 7946) valido.
 // NOTA: per avere un'idea dell'input vedere il test corrispondente,
 // per il GeoJSON finale da generare vedere il file `mock.js`.
-export function createGeoJSON(data) {}
+export function createGeoJSON(data) {
+  const geoJSON = {
+    type: 'FeatureCollection',
+    features: [],
+  };
+
+  data.pointsOfInterest.forEach((c) => {
+    geoJSON.features.push({
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [c.coordinates.lng, c.coordinates.lat],
+      },
+      properties: {
+        name: c.name,
+      },
+    });
+  });
+
+  data.streets.forEach((street) => {
+    const segments = JSON.parse(street.polyline);
+    const coordinates = segments.map((c) => [c.start.lng, c.start.lat]);
+    coordinates.push([
+      segments[segments.length - 1].end.lng,
+      segments[segments.length - 1].end.lat,
+    ]);
+
+    geoJSON.features.push({
+      type: 'Feature',
+      geometry: {
+        type: 'LineString',
+        coordinates: coordinates,
+      },
+      properties: {
+        lanes: street.extraProps.lane,
+        name: street.name,
+      },
+    });
+  });
+
+  return geoJSON;
+}
 
 // Dati un array contentente le coordinate [lng, lat] di alcune geometrie (linee e punti),
 // e un punto con coordinate [lng, lat], stabilire se il punto interseca una o più geometrie del primo array.
