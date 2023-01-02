@@ -56,17 +56,37 @@ export function getCachedValue(key, getValue, cache) {
 
 // Dato un array bidimensionale, dove ogni array interno è una coppia chiave-valore, convertirlo in un oggetto
 // Es.: [['name', 'John'], ['age', 22]] diventa { name: 'John', age: 22 }
-export function arrayToObject(array) {}
+export function arrayToObject(array) {
+  return Object.fromEntries(array);
+}
 
 // Come `arrayToObject`, ma tutti i valori di tipo array devono a loro volta essere trasformati in oggetti
 // Controllare il test per vedere dato iniziale e risultato finale
-export function arrayToObjectDeep(array) {}
+export function arrayToObjectDeep(array) {
+  return array.reduce((objToReturn, c) => {
+    if (Array.isArray(c[1])) {
+      objToReturn[c[0]] = arrayToObjectDeep(c[1]);
+      // uses recursion to properly get the correct value in an array with depth N
+    } else {
+      objToReturn[c[0]] = c[1];
+    }
+    return objToReturn;
+  }, {});
+}
 
 // Dato un oggetto e una funzione `predicate` da chiamare con la coppia chiave-valore,
 // restituire true se almeno una delle proprietà dell'oggetto soddisfa la funzione `predicate`.
 // Es.: { name: 'Mary', age: 99, children: 4 } con predicate = (key, value) => value > 10
 // ritorna true perché è presente una proprietà maggiore di 10 (age)
-export function hasValidProperty(object, predicate) {}
+export function hasValidProperty(object, predicate) {
+  let flag = false;
+  Object.entries(object).forEach(([key, value]) => {
+    if (predicate(key, value)) {
+      flag = true;
+    }
+  });
+  return flag;
+}
 
 // Dato un oggetto, estrarre tutti i valori che sono a loro volta oggetti in un oggetto separato, usando come chiave il loro id;
 // rimuovere la chiave nell'oggetto di partenza e sostituirla con `{nome_chiave}Id` e usare come valore l'id dell'oggetto estratto.
@@ -74,7 +94,9 @@ export function hasValidProperty(object, predicate) {}
 // { id: 1, name: 'John', carId: 33 } e l'altro { 33: { id: 33, manufacturer: 'Ford' } }
 // Ritornare un array con i due oggetti (vedere il test per altri esempi)
 // Idealmente dovrebbe funzionare per ogni oggetto trovato dentro l'oggetto di partenza, anche quelli annidati
-export function normalizeObject(object) {}
+export function normalizeObject(object) {
+  
+}
 
 // Dato un tree del tipo
 // 1.       A
