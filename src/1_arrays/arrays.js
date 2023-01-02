@@ -90,7 +90,7 @@ export function mergeArraysUnique(...arrays) {
 // Nota: `key` farà sempre riferimento a valori numerici
 export function sortBy(array, key, direction) {
   return array.sort((a, b) => {
-    // correctly makes use of the callback inside of the sort() function
+    // correctly makes use of the callback inside of the sort() method
     if (direction === 'ASC') {
       return a[key] - b[key];
     } else if (direction === 'DESC') {
@@ -309,11 +309,12 @@ export function every(array, predicate) {
 // Implementare il metodo nativo Array.reduce()
 export function reduce(array, reducer, initialState) {
   let accumulator;
+  //consindering the case of a given multiplication or division inside the reducer
   if (initialState === undefined && reducer(0, 1) === 0) {
-    //consindering the case of a given multiplication or division inside the reducer
     accumulator = 1;
+    // consindering the case of a given sum or subtraction inside the reducer
   } else if (
-    (initialState === undefined && reducer(0, 1) === 1) || // consindering the case of a given sum or subtraction inside the reducer
+    (initialState === undefined && reducer(0, 1) === 1) ||
     reducer(0, 1) === -1
   ) {
     accumulator = 0;
