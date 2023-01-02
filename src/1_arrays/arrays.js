@@ -75,12 +75,12 @@ export function removeFromArray(array, index) {
 
 // Dati 2 o più array, unirli in un unico array
 export function mergeArrays(...arrays) {
-  return [].concat(...arrays);
+  return [].concat(...arrays); // uses concat from an empty array injecting all the values of ...arrays
 }
 
 // Dati 2 o più array, unirli in un unico array, ma rimuovere eventuali duplicati
 export function mergeArraysUnique(...arrays) {
-  return [...new Set([].concat(...arrays))];
+  return [...new Set([].concat(...arrays))]; // uses a set to have a result with no duplicates
 }
 
 // Dato un array di oggetti, una chiave e una direzione (ASC | DESC), ordinare l'array in base ai valori della chiave specificata
@@ -89,25 +89,14 @@ export function mergeArraysUnique(...arrays) {
 // restituisce [{ age: 44, name: 'Mary' }, { age: 31, name: 'Mark' }, { age: 22, name: 'John' }]
 // Nota: `key` farà sempre riferimento a valori numerici
 export function sortBy(array, key, direction) {
-  const arrToReturn = [];
-  const keyArr = [];
-
-  array.forEach((c) => {
-    keyArr.push(c[key]); // an array with all the keys of the original array
+  return array.sort((a, b) => {
+    // correctly makes use of the callback inside of the sort() function
+    if (direction === 'ASC') {
+      return a[key] - b[key];
+    } else if (direction === 'DESC') {
+      return b[key] - a[key];
+    }
   });
-
-  if (direction === 'ASC') {
-    keyArr.sort();
-  } else {
-    keyArr.sort().reverse(); // reverse() will make the order descending
-  }
-
-  keyArr.forEach((c) => {
-    arrToReturn.push(array[array.findIndex((d) => d[key] === c)]);
-    // from the sorted array of keys, we can find the corresponding item in the original array
-  });
-
-  return arrToReturn;
 }
 
 // Dato un array di oggetti, convertirlo in oggetto e usare come chiave il valore di `key`
