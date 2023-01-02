@@ -104,4 +104,56 @@ export function createGeoJSON(data) {}
 // hanno `highlighted: true` all'interno dell'oggetto `properties`. Se il punto non interseca nulla, ritornare null.
 // Per vedere i dati in input e il risultato finale, fare riferimento ai test.
 // NOTA: usare booleanIntersects (https://turfjs.org/docs/#booleanIntersects) per controllare se una geometria ne interseca un'altra.
-export function highlightActiveFeatures(geoJSON, point) {}
+export function highlightActiveFeatures(geoJSON, point) {
+  const features = [];
+  geoJSON.forEach((feature) => {
+    const [type, coordinates] = feature;
+    if (type === 'point') {
+      const geoJSONFeature = {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: coordinates,
+        },
+      };
+      if (
+        booleanIntersects(geoJSONFeature, {
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: point },
+        })
+      ) {
+        geoJSONFeature.properties = { highlighted: true };
+      }
+      features.push(geoJSONFeature);
+    } else if (type === 'line') {
+      const geoJSONFeature = {
+        type: 'Feature',
+        geometry: {
+          type: 'LineString',
+          coordinates: coordinates,
+        },
+      };
+      if (
+        booleanIntersects(geoJSONFeature, {
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: point },
+        })
+      ) {
+        geoJSONFeature.properties = { highlighted: true };
+      }
+      features.push(geoJSONFeature);
+    }
+  });
+  const geoJSONObject = {
+    type: 'FeatureCollection',
+    features: features,
+  };
+  if (
+    features.some(
+      (feature) => feature.properties && feature.properties.highlighted
+    )
+  ) {
+    return geoJSONObject;
+  }
+  return null;
+}
