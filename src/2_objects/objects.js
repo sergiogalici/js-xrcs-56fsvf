@@ -102,7 +102,8 @@ export function normalizeObject(object) {
         return [a, b];
       }
       if (typeof value === 'object') {
-        a[`${key}Id`] = value.id;
+        a[`${key}Id`] = Object.entries(value)[0][1];
+        // get the first value of the object to not hardcode "value.id" (it could have another name)
         const [recursiveA, recursiveB] = normalizeObject(value);
         // uses recursion to properly receive any nested objects inside of "value"
         // in the case of an empty "a" value in the recursive call
