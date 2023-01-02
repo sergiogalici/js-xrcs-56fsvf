@@ -13,19 +13,36 @@ export function mergeObjects(object1, object2) {
 // Dato un oggetto e un array con chiave-valore, aggiungere chiave-valore all'oggetto
 // senza modificare l'originale, ma restituendo una copia
 export function setProperty(object, [key, value]) {
+  // an error inside the name of the function ("setPropery" instead of "setProperty" was properly corrected both in the object.js and in the objects.test.js files)
   return { ...object, [key]: value };
 }
 
 // Convertire un oggetto contentene altri oggetti in array
 // La chiave di ciascun oggetto va inserita nell'oggetto stesso come `key`
 // Es.: { a: { name: 'X' }, b: { name: 'Y' } } diventa [{ key: 'a', name: 'X' }, b: { key: 'b', name: 'Y' }]
-export function toArray(object) {}
+export function toArray(object) {
+  return Object.entries(object).map(([key, values]) => {
+    let obj = { key: key };
+    for (let value in values) {
+      obj[value] = object[key][value];
+    }
+    return obj;
+  });
+}
 
 // Dato un oggetto, restituire un nuovo oggetto mantenendo
 // soltanto le chiavi i cui valori soddisfano la funzione `predicate` (a cui bisogna passare sia la chiave, sia il valore)
 // Es.: { name: 'Kate', number1: 100, number2: 40, number3: 77 } con predicate = (key, value) => key === 'name' || value > 50
 // restituisce  { name: 'Kate', number1: 100, number3: 77 }
-export function filterObject(object, predicate) {}
+export function filterObject(object, predicate) {
+  const objToReturn = {};
+  Object.entries(object).map(([key, value]) => {
+    if (predicate(key, value)) {
+      objToReturn[key] = value;
+    }
+  });
+  return objToReturn;
+}
 
 // Data una chiave `key`, una funzione `getValue` per ottenere il valore associato a quella chiave e un oggetto `cache`,
 // `getCachedValue` deve chiamare una sola volta `getValue` e conservare il valore ottenuto, in modo che se
