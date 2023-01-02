@@ -80,7 +80,7 @@ export function mergeArrays(...arrays) {
 
 // Dati 2 o più array, unirli in un unico array, ma rimuovere eventuali duplicati
 export function mergeArraysUnique(...arrays) {
-  return [...new Set([].concat(...arrays))]; // uses a set to have a result with no duplicates
+  return Array.from(new Set([].concat(...arrays))); // uses a set to have a result with no duplicates
 }
 
 // Dato un array di oggetti, una chiave e una direzione (ASC | DESC), ordinare l'array in base ai valori della chiave specificata
