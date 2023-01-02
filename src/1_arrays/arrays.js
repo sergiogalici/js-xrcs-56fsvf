@@ -30,13 +30,11 @@ export function insertIntoArray(array, newElement, index) {
 // nel secondo caso il primo elemento che ha name uguale ad Anna
 // Restituire null se non viene trovato nulla
 export function findBy(array, condition) {
-  for (let i = 0; i < array.length; i++) {
-    if (
-      array[i].id === condition.id ||
-      array[i].name === condition.name ||
-      array[i].age === condition.age
-    ) {
-      return array[i];
+  for (const item of array) {
+    for (const key of Object.keys(item)) {
+      if (condition.hasOwnProperty(key) && condition[key] === item[key]) {
+        return item;
+      }
     }
   }
   return null;
