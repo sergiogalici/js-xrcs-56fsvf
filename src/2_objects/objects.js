@@ -106,8 +106,6 @@ export function normalizeObject(object) {
         // get the first value of the object to not hardcode "value.id" (it could have another name)
         const [recursiveA, recursiveB] = normalizeObject(value);
         // uses recursion to properly receive any nested objects inside of "value"
-        // in the case of an empty "a" value in the recursive call
-        // it will return {...b (from the accumulator) ... recursiveB (from the recursion) ...{}}
         b = { ...b, ...recursiveB, [value.id]: recursiveA };
         return [a, b];
       }
