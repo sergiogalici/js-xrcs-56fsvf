@@ -118,13 +118,9 @@ export function normalizeObject(object) {
 export function getTreeDepth(tree) {
   let depth = 1;
   if (tree.children) {
-    let max = 0;
-    for (const child of tree.children) {
-      const depthOfChild = getTreeDepth(child);
-
-      max = depthOfChild > max ? depthOfChild : max;
-    }
-    depth += max;
+    depth += tree.children.reduce((max, child) => {
+      return Math.max(max, getTreeDepth(child));
+    }, 0);
   }
   return depth;
 }
@@ -132,16 +128,13 @@ export function getTreeDepth(tree) {
 // Dato un tree come sopra, contare il numero di nodi "leaf", cioè quelli senza ulteriori figli (0 children)
 // Considerando l'esempio sopra, i nodi "leaf" sono 4 (C, D, E, F)
 export function countTreeLeafNodes(tree) {
-  let nodes = 0;
-  if (tree.children) {
-    for (const child of tree.children) {
-      nodes += countTreeLeafNodes(child);
-    }
-  }
   if (!tree.children) {
-    nodes++;
+    return 1;
   }
-  return nodes;
+  return tree.children.reduce(
+    (nodes, child) => nodes + countTreeLeafNodes(child),
+    0
+  );
 }
 
 // Dati un oggetto e un path di tipo stringa, `get` deve restituire la proprietà al path specificato.
