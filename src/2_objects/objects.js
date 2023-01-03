@@ -119,7 +119,8 @@ export function getTreeDepth(tree) {
   let depth = 1;
   if (tree.children) {
     depth += tree.children.reduce((max, child) => {
-      return Math.max(max, getTreeDepth(child));
+      const depthOfChild = getTreeDepth(child);
+      return depthOfChild > max ? depthOfChild : max;
     }, 0);
   }
   return depth;
