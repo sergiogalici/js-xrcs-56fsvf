@@ -69,7 +69,7 @@ export function toggleArrayItem(array, element) {
 export function removeFromArray(array, index) {
   return index < 0 || index > array.length
     ? array
-    : [...array.slice(0, index), ...array.slice(index + 1)];
+    : array.filter((c, i) => i !== index);
   // this correctly considers a negative index and an index that exceeds the length of the array
 }
 
@@ -103,19 +103,17 @@ export function sortBy(array, key, direction) {
 // Es.: [{ id: 1, name: 'A' }, { id: 2, name: 'B' }] con key = 'name' deve restituire
 // { A: { id: 1, name: 'A' }, B: { id: 2, name: 'B' } }
 export function keyBy(array, key) {
-  const objToReturn = {};
-  array.forEach((c) => {
-    objToReturn[c[key]] = c;
-  });
-
-  return objToReturn;
+  return array.reduce((acc, c) => {
+    acc[c[key]] = c;
+    return acc;
+  }, {});
 }
 
 // Dato un array, inserire il nuovo elemento all'indice specificato, sostituendo quello che c'è già
 export function replaceItemAtIndex(array, newItem, index) {
-  const arrToReturn = [...array];
-  arrToReturn.splice(index, 1, newItem); // splice removes 1 an item at index "index" and adds newItem
-  return arrToReturn;
+  return array.map((c, i) => {
+    return i === index ? newItem : c;
+  });
 }
 
 // Dato un array di oggetti, aggiungere a ogni oggetto le proprietà specificate
@@ -160,13 +158,11 @@ export function setSelected(array, selectedIds) {
 // deve restituire ['A', 'B', 'C']
 // Se la chiave non esiste, ritornare l'elemento originale
 export function mapTo(array, key) {
-  const arrToReturn = [];
-  array.forEach((c) => {
-    if (key in c) {
-      arrToReturn.push(c[key]);
-    }
-  });
-  return arrToReturn.length > 0 ? arrToReturn : array; // if arrToReturn has a length of 0, the key doesn't exist
+  return array.filter((c) => key in c).length > 0
+    ? array.map((c) => {
+        return key in c ? c[key] : c;
+      })
+    : array;
 }
 
 // Dato un array di oggetti e una funzione `predicate`, eseguire la funzione per ogni elemento
@@ -174,11 +170,7 @@ export function mapTo(array, key) {
 // Es.: [{ id: 1, age: 32 }, { id: 2, age: 29 }] con predicate = (item) => item.age > 30,
 // `areItemsValid` ritorna false perché non tutti gli elementi hanno `age` maggiore di 30
 export function areItemsValid(array, predicate) {
-  return (
-    array.filter((c) => {
-      return predicate(c);
-    }).length === array.length // if the lengths match, it means all the elements return true
-  );
+  return array.every((c) => predicate(c));
 }
 
 // Dato un array di stringhe, un array di oggetti e una chiave, ritornare un nuovo array
@@ -187,15 +179,14 @@ export function areItemsValid(array, predicate) {
 // `populate` reve restituire [{ id: '11', name: 'B' }, { id: '22', name: 'C' }, { id: '33', name: 'A' }]
 // perché '11' nel primo array corrisponde con l'oggetto che ha id = '11' nel secondo array e così via
 export function populate(array, dataArray, key) {
-  const arrToReturn = [];
-  array.forEach((c) => {
+  return array.reduce((acc, c) => {
     dataArray.forEach((d) => {
       if (d[key] === c) {
-        arrToReturn.push(d);
+        acc.push(d);
       }
     });
-  });
-  return arrToReturn;
+    return acc;
+  }, []);
 }
 
 // Dato un array products del tipo { product: 'A', price: 100, quantity: 1, special: true }
@@ -229,32 +220,23 @@ export function getTotal(products, discounts) {
 // Se non ci sono commenti, comments deve essere un array vuoto
 // Controllare il risultato del test per vedere come deve essere l'array finale
 export function populatePosts(posts, comments, users) {
-  const arrToReturn = [];
-  posts.forEach((p) => {
-    p.comments = [];
-    users.forEach((u) => {
-      if (u.id === p.userId) {
-        p.user = u;
-      }
-    });
-    if (comments.length > 0) {
-      comments.forEach((c) => {
-        users.forEach((uc) => {
-          if (uc.id === c.userId) {
-            c.user = uc;
-            delete c.userId; // deletes the field "userId" from the comment as requested
-          }
-        });
-        if (p.id === c.postId) {
-          delete c.postId; // deletes the field "postId" from the comment as requested
-          p.comments.push(c);
-        }
-      });
-    }
+  return posts.map((p) => {
+    const user = users.find((u) => u.id === p.userId);
+    p.user = user;
     delete p.userId;
-    arrToReturn.push(p);
+
+    p.comments = comments
+      .filter((c) => c.postId === p.id)
+      .map((c) => {
+        const user = users.find((u) => u.id === c.userId);
+        c.user = user;
+        delete c.userId;
+        delete c.postId;
+        return c;
+      });
+
+    return p;
   });
-  return arrToReturn;
 }
 
 // Implementare il metodo nativo Array.map()
@@ -295,32 +277,23 @@ export function some(array, predicate) {
 
 // Implementare il metodo nativo Array.every()
 export function every(array, predicate) {
-  let flag = false;
   for (let i = 0; i < array.length; i++) {
-    if (predicate(array[i], i, array)) {
-      flag = true; // flag turns true only when the predicate returns true
-    } else {
-      flag = false; //in any other case it will returns false and stay false
+    if (!predicate(array[i], i, array)) {
+      return false;
     }
   }
-  return flag;
+  return true;
 }
 
 // Implementare il metodo nativo Array.reduce()
 export function reduce(array, reducer, initialState) {
   let accumulator;
-  //consindering the case of a given multiplication or division inside the reducer
-  if (initialState === undefined && reducer(0, 1) === 0) {
-    accumulator = 1;
-    // consindering the case of a given sum or subtraction inside the reducer
-  } else if (
-    (initialState === undefined && reducer(0, 1) === 1) ||
-    reducer(0, 1) === -1
-  ) {
-    accumulator = 0;
-  } else {
-    accumulator = initialState;
+
+  if (initialState === undefined) {
+    initialState = array[0];
+    array = array.slice(1);
   }
+  accumulator = initialState;
 
   for (let i = 0; i < array.length; i++) {
     accumulator = reducer(accumulator, array[i], i, array);
