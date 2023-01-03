@@ -35,13 +35,12 @@ export function toArray(object) {
 // Es.: { name: 'Kate', number1: 100, number2: 40, number3: 77 } con predicate = (key, value) => key === 'name' || value > 50
 // restituisce  { name: 'Kate', number1: 100, number3: 77 }
 export function filterObject(object, predicate) {
-  const objToReturn = {};
-  Object.entries(object).map(([key, value]) => {
+  return Object.entries(object).reduce((acc, [key, value]) => {
     if (predicate(key, value)) {
-      objToReturn[key] = value;
+      acc[key] = value;
     }
-  });
-  return objToReturn;
+    return acc;
+  }, {});
 }
 
 // Data una chiave `key`, una funzione `getValue` per ottenere il valore associato a quella chiave e un oggetto `cache`,
@@ -79,13 +78,7 @@ export function arrayToObjectDeep(array) {
 // Es.: { name: 'Mary', age: 99, children: 4 } con predicate = (key, value) => value > 10
 // ritorna true perché è presente una proprietà maggiore di 10 (age)
 export function hasValidProperty(object, predicate) {
-  let flag = false;
-  Object.entries(object).forEach(([key, value]) => {
-    if (predicate(key, value)) {
-      flag = true;
-    }
-  });
-  return flag;
+  return Object.entries(object).some(([key, value]) => predicate(key, value));
 }
 
 // Dato un oggetto, estrarre tutti i valori che sono a loro volta oggetti in un oggetto separato, usando come chiave il loro id;
