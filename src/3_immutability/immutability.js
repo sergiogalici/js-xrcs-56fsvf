@@ -71,7 +71,22 @@ export const removeAddressCoordinates = (users) => {
 };
 
 // Ritornare l'array di utenti senza company
-export const removeCompanyInfo = (users) => {};
+export const removeCompanyInfo = (users) => {
+  return users.map((user) => {
+    const userToReturn = { ...user };
+    Object.entries(userToReturn).forEach(([uKey, uValue]) => {
+      if (uKey === 'company') {
+        delete userToReturn[uKey];
+      }
+      if (uKey !== 'company' && typeof uValue === 'object') {
+        const valueArr = [uValue];
+        userToReturn[uKey] = removeCompanyInfo(valueArr)[0];
+        // uses recursion to make the function work with any possible object structure
+      }
+    });
+    return userToReturn;
+  });
+};
 
 // Aggiungere newUser a users e ritornare l'array
 export const addNewUser = (users, newUser) => {};
