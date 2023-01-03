@@ -54,7 +54,7 @@ export const changeUsersAddress = (users, addressChanges) => {
 
 // Ritornare l'array di utenti senza geo in address
 export const removeAddressCoordinates = (users) => {
-  return users.map((user) => {
+  return users.map((user, index) => {
     const userToReturn = { ...user };
     Object.entries(userToReturn).forEach(([uKey, uValue]) => {
       if (uKey === 'geo') {
@@ -62,7 +62,7 @@ export const removeAddressCoordinates = (users) => {
       }
       if (uKey !== 'geo' && typeof uValue === 'object') {
         const valueArr = [uValue];
-        userToReturn[uKey] = removeAddressCoordinates(valueArr)[0];
+        userToReturn[uKey] = removeAddressCoordinates(valueArr)[index];
         // uses recursion to make the function work with any possible object structure
       }
     });
@@ -72,7 +72,7 @@ export const removeAddressCoordinates = (users) => {
 
 // Ritornare l'array di utenti senza company
 export const removeCompanyInfo = (users) => {
-  return users.map((user) => {
+  return users.map((user, index) => {
     const userToReturn = { ...user };
     Object.entries(userToReturn).forEach(([uKey, uValue]) => {
       if (uKey === 'company') {
@@ -80,7 +80,7 @@ export const removeCompanyInfo = (users) => {
       }
       if (uKey !== 'company' && typeof uValue === 'object') {
         const valueArr = [uValue];
-        userToReturn[uKey] = removeCompanyInfo(valueArr)[0];
+        userToReturn[uKey] = removeCompanyInfo(valueArr)[index];
         // uses recursion to make the function work with any possible object structure
       }
     });
@@ -89,7 +89,30 @@ export const removeCompanyInfo = (users) => {
 };
 
 // Aggiungere newUser a users e ritornare l'array
-export const addNewUser = (users, newUser) => {};
+export const addNewUser = (users, newUser) => {
+  return users.reduce(
+    (acc, _) => {
+      acc.push(newUser);
+      return acc;
+    },
+    [...users]
+  );
+};
 
 // Ritornare l'array di utenti con lat e lng dentro geo convertiti in numero, non stringa
-export const convertUsersGeoToNumber = (users) => {};
+export const convertUsersGeoToNumber = (users) => {
+  return users.map((user, index) => {
+    const userToReturn = { ...user };
+    Object.entries(userToReturn).forEach(([uKey, uValue]) => {
+      if (uKey === 'lat' || uKey == 'lng') {
+        userToReturn[uKey] = Number(userToReturn[uKey]);
+      }
+      if (!(uKey === 'lat' || uKey == 'lng') && typeof uValue === 'object') {
+        const valueArr = [uValue];
+        userToReturn[uKey] = convertUsersGeoToNumber(valueArr)[index];
+        // uses recursion to make the function work with any possible object structure
+      }
+    });
+    return userToReturn;
+  });
+};
