@@ -26,10 +26,49 @@ export const users = Object.freeze([user10]);
 
 // addressChanges è un oggetto che contiene una o più proprietà di Address da cambiare, ad esempio { city: London }
 // Ritornare l'array di utenti con le proprietà cambiate, mantenendo invariate quelle non presenti in addressChanges
-export const changeUsersAddress = (users, addressChanges) => {};
+export const changeUsersAddress = (users, addressChanges) => {
+  // considers "users" as an array of users istead of a single user (user10)
+  return users.map((user, index) => {
+    const userToReturn = { ...user };
+    Object.entries(userToReturn).forEach(([uKey, uValue]) => {
+      if (typeof uValue === 'object') {
+        const valurArr = [uValue];
+        userToReturn[uKey] = changeUsersAddress(valurArr, addressChanges)[
+          index
+        ];
+        //uses recursion to get any possible nested object
+      } else {
+        Object.entries(addressChanges).forEach(([aKey, aValue]) => {
+          if (
+            userToReturn.hasOwnProperty(aKey) &&
+            userToReturn[aKey] !== addressChanges[aKey]
+          ) {
+            userToReturn[aKey] = aValue;
+          }
+        });
+      }
+    });
+    return userToReturn;
+  });
+};
 
 // Ritornare l'array di utenti senza geo in address
-export const removeAddressCoordinates = (users) => {};
+export const removeAddressCoordinates = (users) => {
+  return users.map((user) => {
+    const userToReturn = { ...user };
+    Object.entries(userToReturn).forEach(([uKey, uValue]) => {
+      if (uKey === 'geo') {
+        delete userToReturn[uKey];
+      }
+      if (uKey !== 'geo' && typeof uValue === 'object') {
+        const valueArr = [uValue];
+        userToReturn[uKey] = removeAddressCoordinates(valueArr)[0];
+        // uses recursion to make the function work with any possible object structure
+      }
+    });
+    return userToReturn;
+  });
+};
 
 // Ritornare l'array di utenti senza company
 export const removeCompanyInfo = (users) => {};
