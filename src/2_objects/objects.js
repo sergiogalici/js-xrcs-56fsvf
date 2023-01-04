@@ -168,25 +168,18 @@ export function get(object, path, fallback) {
 // NOTA: per avere un'idea dell'input vedere il test corrispondente,
 // per il GeoJSON finale da generare vedere il file `mock.js`.
 export function createGeoJSON(data) {
-  const geoJSON = {
-    type: 'FeatureCollection',
-    features: [],
-  };
+  const pointsOfInterestFeatures = data.pointsOfInterest.map((c) => ({
+    type: 'Feature',
+    geometry: {
+      type: 'Point',
+      coordinates: [c.coordinates.lng, c.coordinates.lat],
+    },
+    properties: {
+      name: c.name,
+    },
+  }));
 
-  data.pointsOfInterest.forEach((c) => {
-    geoJSON.features.push({
-      type: 'Feature',
-      geometry: {
-        type: 'Point',
-        coordinates: [c.coordinates.lng, c.coordinates.lat],
-      },
-      properties: {
-        name: c.name,
-      },
-    });
-  });
-
-  data.streets.forEach((street) => {
+  const streetsFeatures = data.streets.map((street) => {
     const segments = JSON.parse(street.polyline);
     const coordinates = segments.map((c) => [c.start.lng, c.start.lat]);
     coordinates.push([
@@ -194,7 +187,7 @@ export function createGeoJSON(data) {
       segments[segments.length - 1].end.lat,
     ]);
 
-    geoJSON.features.push({
+    return {
       type: 'Feature',
       geometry: {
         type: 'LineString',
@@ -204,10 +197,13 @@ export function createGeoJSON(data) {
         lanes: street.extraProps.lane,
         name: street.name,
       },
-    });
+    };
   });
 
-  return geoJSON;
+  return {
+    type: 'FeatureCollection',
+    features: [...pointsOfInterestFeatures, ...streetsFeatures],
+  };
 }
 
 // Dati un array contentente le coordinate [lng, lat] di alcune geometrie (linee e punti),
@@ -217,45 +213,25 @@ export function createGeoJSON(data) {
 // Per vedere i dati in input e il risultato finale, fare riferimento ai test.
 // NOTA: usare booleanIntersects (https://turfjs.org/docs/#booleanIntersects) per controllare se una geometria ne interseca un'altra.
 export function highlightActiveFeatures(geoJSON, point) {
-  const features = [];
-  geoJSON.forEach((feature) => {
-    const [type, coordinates] = feature;
-    if (type === 'point') {
-      const geoJSONFeature = {
+  const features = geoJSON.map(([type, coordinates]) => {
+    const geoJSONFeature = {
+      type: 'Feature',
+      geometry: {
+        type: type === 'point' ? 'Point' : 'LineString',
+        coordinates: coordinates,
+      },
+    };
+    if (
+      booleanIntersects(geoJSONFeature, {
         type: 'Feature',
-        geometry: {
-          type: 'Point',
-          coordinates: coordinates,
-        },
-      };
-      if (
-        booleanIntersects(geoJSONFeature, {
-          type: 'Feature',
-          geometry: { type: 'Point', coordinates: point },
-        })
-      ) {
-        geoJSONFeature.properties = { highlighted: true };
-      }
-      features.push(geoJSONFeature);
-    } else if (type === 'line') {
-      const geoJSONFeature = {
-        type: 'Feature',
-        geometry: {
-          type: 'LineString',
-          coordinates: coordinates,
-        },
-      };
-      if (
-        booleanIntersects(geoJSONFeature, {
-          type: 'Feature',
-          geometry: { type: 'Point', coordinates: point },
-        })
-      ) {
-        geoJSONFeature.properties = { highlighted: true };
-      }
-      features.push(geoJSONFeature);
+        geometry: { type: 'Point', coordinates: point },
+      })
+    ) {
+      geoJSONFeature.properties = { highlighted: true };
     }
+    return geoJSONFeature;
   });
+
   const geoJSONObject = {
     type: 'FeatureCollection',
     features: features,
