@@ -225,15 +225,18 @@ export function populatePosts(posts, comments, users) {
     p.user = user;
     delete p.userId;
 
-    p.comments = comments
-      .filter((c) => c.postId === p.id)
-      .map((c) => {
-        const user = users.find((u) => u.id === c.userId);
-        c.user = user;
-        delete c.userId;
-        delete c.postId;
-        return c;
-      });
+    const filteredComments = comments.filter((c) => c.postId === p.id);
+
+    p.comments =
+      filteredComments.length > 0
+        ? filteredComments.map((c) => {
+            const user = users.find((u) => u.id === c.userId);
+            c.user = user;
+            delete c.userId;
+            delete c.postId;
+            return c;
+          })
+        : [];
 
     return p;
   });
